@@ -18,7 +18,8 @@ namespace DealerFinder.Model
   public enum ProductType
   {
     Bts,
-    ContactAtOnce,
+    ContactAtOnceLegacy,
+    ContactAtOnceUnified,
     ClassicVdp,
     SrirachaVdp,
     FlickFusion,
@@ -44,7 +45,8 @@ namespace DealerFinder.Model
           "Chat Providers",
           new List<Product>
           {
-            new Product(ProductType.ContactAtOnce, "Contact At Once!")
+            new Product(ProductType.ContactAtOnceLegacy, "Contact At Once! Legacy"),
+            new Product(ProductType.ContactAtOnceUnified, "Contact At Once! Unified")
           } 
         )
       },

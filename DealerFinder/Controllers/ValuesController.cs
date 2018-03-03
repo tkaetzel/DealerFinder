@@ -47,10 +47,14 @@ namespace DealerFinder.Controllers
 
       using (var dbConnection = DbConnection)
       {
-        string query = $@"SELECT ds.dealer_id, d.Name, d.City, d.State FROM Dealeron..Dealeron_Setup ds
+        string query = $@"SELECT DISTINCT ds.dealer_id, d.Name, d.City, d.State FROM Dealeron..Dealeron_Setup ds
             JOIN EDealer..Dealers d ON ds.dealer_id = d.dealerid
             JOIN Dealeron..CustomContentProviderDealers ccpd ON ds.dealer_id = ccpd.dealerid
             JOIN Dealeron..CustomizationsDealer cd ON ds.dealer_id = cd.dealer_id
+            JOIN Dealeron..Section s ON ds.dealer_id = s.dealer_id
+            JOIN Dealeron..Page p ON s.section_id = p.section_id
+            JOIN Dealeron..PageBlock pb ON p.page_id = pb.page_id
+            JOIN Dealeron..ChatProviderDealers cpd ON cpd.dealerId = ds.dealer_id
             WHERE {whereClause}";
 
         dbConnection.Open();
@@ -70,11 +74,19 @@ namespace DealerFinder.Controllers
         .Where(productType => Products.CategorizedProducts[CategoryType.Customizations].Products.Select(product => product.Type).Contains(productType));
       var customizationsQuery = GetCustomizationsQuery(customizations);
 
-      /*var vdpTypes = products
-        .Where(productType => Products.CategorizedProducts[CategoryType.VdpTypes].Products.Select(product => product.Type).Equals(productType));
-      var vdpTypesQuery = GetCustomizationsQuery(vdpTypes);*/
+      var vdpTypes = products
+        .Where(productType => Products.CategorizedProducts[CategoryType.VdpTypes].Products.Select(product => product.Type).Contains(productType));
+      var vdpTypesQuery = GetVdpTypesQuery(vdpTypes);
 
-      var whereClause = tpiQuery + customizationsQuery;
+      var widgets = products
+        .Where(productType => Products.CategorizedProducts[CategoryType.Widgets].Products.Select(product => product.Type).Contains(productType));
+      var widgetsQuery = GetWidgetsQuery(widgets);
+
+      var chatProviders = products
+        .Where(productType => Products.CategorizedProducts[CategoryType.ChatProviders].Products.Select(product => product.Type).Contains(productType));
+      var chatProvidersQuery = GetChatProvidersQuery(chatProviders);
+
+      var whereClause = tpiQuery + customizationsQuery + vdpTypesQuery + widgetsQuery + chatProvidersQuery;
       if (!string.IsNullOrWhiteSpace(whereClause))
       {
         whereClause = whereClause.Substring(0, whereClause.LastIndexOf(" AND"));
@@ -113,6 +125,63 @@ namespace DealerFinder.Controllers
             break;
         }
         if (custId != 0) { query += $"cd.cust_id = {custId} AND "; }
+      }
+      return query;
+    }
+
+    private string GetVdpTypesQuery(IEnumerable<ProductType> vdpTypes)
+    {
+      var query = "";
+      foreach (var vdpType in vdpTypes)
+      {
+        var templateId = "";
+        switch (vdpType)
+        {
+          case (ProductType.ClassicVdp):
+            templateId = "NULL,40,41";
+            break;
+          case (ProductType.SrirachaVdp):
+            templateId = "153,154";
+            break;
+        }
+        if (templateId != "") { query += $"p.template_id IN ({templateId}) AND "; }
+      }
+      return query;
+    }
+
+    private string GetWidgetsQuery(IEnumerable<ProductType> widgets)
+    {
+      var query = "";
+      foreach (var widget in widgets)
+      {
+        var assetId = 0;
+        switch (widget)
+        {
+          case (ProductType.OpenSearch):
+            assetId = 159;
+            break;
+        }
+        if (assetId != 0) { query += $"pb.asset_id = {assetId} AND "; }
+      }
+      return query;
+    }
+
+    private string GetChatProvidersQuery(IEnumerable<ProductType> chatProviders)
+    {
+      var query = "";
+      foreach (var chatProvider in chatProviders)
+      {
+        var id = 0;
+        switch (chatProvider)
+        {
+          case (ProductType.ContactAtOnceLegacy):
+            id = 3;
+            break;
+          case (ProductType.ContactAtOnceUnified):
+            id = 10;
+            break;
+        }
+        if (id != 0) { query += $"cpd.ChatProviderId = {id} AND "; }
       }
       return query;
     }
