@@ -4,11 +4,10 @@ using System.Collections.Generic;
 
 namespace DealerFinder.Model
 {
-  public enum Category
+  [JsonConverter(typeof(StringEnumConverter))]
+  public enum CategoryType
   {
     Customizations,
-    MobileLeadDriver,
-    PricingElements,
     ChatProviders,
     VdpTypes,
     Tpis,
@@ -16,13 +15,10 @@ namespace DealerFinder.Model
   }
 
   [JsonConverter(typeof(StringEnumConverter))]
-  public enum Product
+  public enum ProductType
   {
     Bts,
-    PersonalizedOffer,
-    ChromeIncentives,
-    MobileLeadDriver,
-    MobileLeadDriverWithGeofencing,
+    ContactAtOnce,
     ClassicVdp,
     SrirachaVdp,
     FlickFusion,
@@ -32,52 +28,53 @@ namespace DealerFinder.Model
   public class Products
   {
     [JsonConverter(typeof(StringEnumConverter))]
-    public static readonly Dictionary<Category, List<Product>> CategorizedProducts = new Dictionary<Category, List<Product>>
+    public static readonly Dictionary<CategoryType, CategoryInfo> CategorizedProducts = new Dictionary<CategoryType, CategoryInfo>
     {
       {
-        Category.Customizations, new List<Product>
-        {
-          Product.Bts
-        }
+        CategoryType.Customizations, new CategoryInfo(
+          "Customizations",
+          new List<Product>
+          {
+            new Product(ProductType.Bts, "BTS")
+          }
+        )
       },
       {
-        Category.MobileLeadDriver, new List<Product>
-        {
-          Product.MobileLeadDriver,
-          Product.MobileLeadDriverWithGeofencing
-        }
+        CategoryType.ChatProviders, new CategoryInfo(
+          "Chat Providers",
+          new List<Product>
+          {
+            new Product(ProductType.ContactAtOnce, "Contact At Once!")
+          } 
+        )
       },
       {
-        Category.PricingElements, new List<Product>
-        {
-          Product.PersonalizedOffer,
-          Product.ChromeIncentives
-        }
+        CategoryType.VdpTypes, new CategoryInfo(
+          "VDP Type",
+          new List<Product>
+          {
+            new Product(ProductType.ClassicVdp, "Classic VDP"),
+            new Product(ProductType.SrirachaVdp, "Sriracha VDP")
+          }
+        )
+      },
+      { 
+        CategoryType.Tpis, new CategoryInfo(
+          "Third Party Integrations",
+          new List<Product>
+          {
+            new Product(ProductType.FlickFusion, "FlickFusion")
+          }
+        )
       },
       {
-        Category.ChatProviders, new List<Product>
-        {
-          Product.Bts
-        }
-      },
-      {
-        Category.VdpTypes, new List<Product>
-        {
-          Product.ClassicVdp,
-          Product.SrirachaVdp
-        }
-      },
-      {
-        Category.Tpis, new List<Product>
-        {
-          Product.FlickFusion,
-        }
-      },
-      {
-        Category.Widgets, new List<Product>
-        {
-          Product.OpenSearch,
-        }
+        CategoryType.Widgets, new CategoryInfo(
+          "Widgets",
+          new List<Product>
+          {
+            new Product(ProductType.OpenSearch, "Open Search")
+          }
+        )
       }
     };
   }

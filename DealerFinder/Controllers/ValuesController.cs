@@ -33,17 +33,17 @@ namespace DealerFinder.Controllers
     [HttpPost]
     public ActionResult Post([FromBody] string[] stringProducts)
     {
-      var products = new List<Product>();
+      var products = new List<ProductType>();
       foreach (var stringProduct in stringProducts)
       {
-        if (Enum.TryParse(stringProduct, out Product product))
+        if (Enum.TryParse(stringProduct, out ProductType product))
         {
           products.Add(product);
         }
       }
 
       var whereClause = GetWhereClause(products);
-      if (string.IsNullOrWhiteSpace(whereClause)) return null;
+      if (string.IsNullOrWhiteSpace(whereClause)) return Json("");
 
       using (var dbConnection = DbConnection)
       {
@@ -60,13 +60,19 @@ namespace DealerFinder.Controllers
       }
     }
 
-    private string GetWhereClause(IEnumerable<Product> products)
+    private string GetWhereClause(IEnumerable<ProductType> products)
     {
-      var tpis = products.Where(product => Products.CategorizedProducts[Category.Tpis].Contains(product));
+      var tpis = products
+        .Where(productType => Products.CategorizedProducts[CategoryType.Tpis].Products.Select(product => product.Type).Contains(productType));
       var tpiQuery = GetTpiQuery(tpis);
 
-      var customizations = products.Where(product => Products.CategorizedProducts[Category.Customizations].Contains(product));
+      var customizations = products
+        .Where(productType => Products.CategorizedProducts[CategoryType.Customizations].Products.Select(product => product.Type).Contains(productType));
       var customizationsQuery = GetCustomizationsQuery(customizations);
+
+      /*var vdpTypes = products
+        .Where(productType => Products.CategorizedProducts[CategoryType.VdpTypes].Products.Select(product => product.Type).Equals(productType));
+      var vdpTypesQuery = GetCustomizationsQuery(vdpTypes);*/
 
       var whereClause = tpiQuery + customizationsQuery;
       if (!string.IsNullOrWhiteSpace(whereClause))
@@ -77,7 +83,7 @@ namespace DealerFinder.Controllers
       return whereClause;
     }
 
-    private string GetTpiQuery(IEnumerable<Product> tpis)
+    private string GetTpiQuery(IEnumerable<ProductType> tpis)
     {
       var query = "";
       foreach (var tpi in tpis)
@@ -85,7 +91,7 @@ namespace DealerFinder.Controllers
         var providerId = 0;
         switch (tpi)
         {
-          case (Product.FlickFusion):
+          case (ProductType.FlickFusion):
             providerId = 50;
             break;
         }
@@ -94,7 +100,7 @@ namespace DealerFinder.Controllers
       return query;
     }
 
-    private string GetCustomizationsQuery(IEnumerable<Product> customizations)
+    private string GetCustomizationsQuery(IEnumerable<ProductType> customizations)
     {
       var query = "";
       foreach(var customization in customizations)
@@ -102,7 +108,7 @@ namespace DealerFinder.Controllers
         var custId = 0;
         switch(customization)
         {
-          case (Product.Bts):
+          case (ProductType.Bts):
             custId = 356;
             break;
         }
