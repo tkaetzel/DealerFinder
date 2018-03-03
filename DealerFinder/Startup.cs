@@ -17,7 +17,7 @@ namespace DealerFinder
   {
     public Startup(IConfiguration configuration)
     {
-        Configuration = configuration;
+      Configuration = configuration;
     }
 
     public IConfiguration Configuration { get; }
@@ -27,19 +27,24 @@ namespace DealerFinder
     {
       var dealeronConnectionString = Microsoft.Extensions.Configuration.ConfigurationExtensions.GetConnectionString(this.Configuration, "Dealeron");
       var eDealerConnectionString = Microsoft.Extensions.Configuration.ConfigurationExtensions.GetConnectionString(this.Configuration, "EDealer");
-      services.AddDbContext<SqlContext>(opt => opt.UseSqlServer(dealeronConnectionString));
+      // services.AddDbContext<SqlContext>(opt => opt.UseSqlServer(dealeronConnectionString));
       services.AddMvc();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
+      app.UseStaticFiles();
 
-        app.UseMvc();
+      if (env.IsDevelopment())
+      {
+        app.UseDeveloperExceptionPage();
+      }
+
+      app.UseMvc(routes =>
+      {
+        routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
+      });
     }
   }
 }
