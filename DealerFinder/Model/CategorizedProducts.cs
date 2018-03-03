@@ -31,10 +31,10 @@ namespace DealerFinder.Model
   public class Products
   {
     [JsonConverter(typeof(StringEnumConverter))]
-    public static readonly Dictionary<Category, Product[]> CategorizedProducts = new Dictionary<Category, Product[]>
+    public static readonly Dictionary<Category, List<Product>> CategorizedProducts = new Dictionary<Category, List<Product>>
     {
       {
-        Category.AddOns, new[]
+        Category.AddOns, new List<Product>
         {
           Product.Bts,
           Product.MobileLeadDriver,
@@ -42,33 +42,33 @@ namespace DealerFinder.Model
         }
       },
       {
-        Category.PricingElements, new[]
+        Category.PricingElements, new List<Product>
         {
           Product.PersonalizedOffer,
           Product.ChromeIncentives
         }
       },
       {
-        Category.ChatProviders, new[]
+        Category.ChatProviders, new List<Product>
         {
           Product.Bts
         }
       },
       {
-        Category.VdpTypes, new[]
+        Category.VdpTypes, new List<Product>
         {
           Product.ClassicVdp,
           Product.SrirachaVdp
         }
       },
       {
-        Category.Tpis, new[]
+        Category.Tpis, new List<Product>
         {
           Product.FlickFusion,
         }
       },
       {
-        Category.Widgets, new[]
+        Category.Widgets, new List<Product>
         {
           Product.OpenSearch,
         }

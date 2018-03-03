@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DealerFinder.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Data.Common;
 
 namespace DealerFinder
 {
@@ -25,9 +28,7 @@ namespace DealerFinder
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      var dealeronConnectionString = Microsoft.Extensions.Configuration.ConfigurationExtensions.GetConnectionString(this.Configuration, "Dealeron");
-      var eDealerConnectionString = Microsoft.Extensions.Configuration.ConfigurationExtensions.GetConnectionString(this.Configuration, "EDealer");
-      // services.AddDbContext<SqlContext>(opt => opt.UseSqlServer(dealeronConnectionString));
+      services.AddSingleton(Configuration);
       services.AddMvc();
     }
 
