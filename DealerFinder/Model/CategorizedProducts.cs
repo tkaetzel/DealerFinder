@@ -6,7 +6,8 @@ namespace DealerFinder.Model
 {
   public enum Category
   {
-    AddOns,
+    Customizations,
+    MobileLeadDriver,
     PricingElements,
     ChatProviders,
     VdpTypes,
@@ -34,11 +35,16 @@ namespace DealerFinder.Model
     public static readonly Dictionary<Category, List<Product>> CategorizedProducts = new Dictionary<Category, List<Product>>
     {
       {
-        Category.AddOns, new List<Product>
+        Category.Customizations, new List<Product>
         {
-          Product.Bts,
+          Product.Bts
+        }
+      },
+      {
+        Category.MobileLeadDriver, new List<Product>
+        {
           Product.MobileLeadDriver,
-          Product.MobileLeadDriverWithGeofencing,
+          Product.MobileLeadDriverWithGeofencing
         }
       },
       {
