@@ -47,7 +47,7 @@ namespace DealerFinder.Controllers
 
       using (var dbConnection = DbConnection)
       {
-        string query = $@"SELECT DISTINCT ds.dealer_id, d.Name, d.City, d.State FROM Dealeron..Dealeron_Setup ds
+        string query = $@"SELECT DISTINCT TOP 6 ds.dealer_id, d.Name, d.City, d.State FROM Dealeron..Dealeron_Setup ds
             JOIN EDealer..Dealers d ON ds.dealer_id = d.dealerid
             JOIN Dealeron..CustomContentProviderDealers ccpd ON ds.dealer_id = ccpd.dealerid
             JOIN Dealeron..CustomizationsDealer cd ON ds.dealer_id = cd.dealer_id

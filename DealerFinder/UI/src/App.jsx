@@ -1,13 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import SearchCriteria from "./SearchCriteria.jsx";
 
-const App = () => {
-  return (
-    <div>
-      <p>React here!</p>
-    </div>
-  );
-};
-
-export default App;
-ReactDOM.render(<App />, document.getElementById("app"));
+ReactDOM.render(<SearchCriteria />, document.getElementById("searchCriteria"));
